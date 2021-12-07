@@ -5,6 +5,32 @@ fun main() {
     val boards = buildBoard(input)
 
     day04Part1(inputNums, boards)
+    day04Part2(inputNums, boards)
+}
+
+fun day04Part2(inputNums: List<Int>, boards: List<Board>) {
+    val winnerBoards = mutableListOf<Board>()
+    var lastWinnerNum = 0
+    inputNums.forEach { num ->
+        boards.forEach {
+            if (!it.isWon) {
+                it.mark(num)
+                if (it.checkWin()) {
+                    winnerBoards.add(it)
+                    it.isWon = true
+                    lastWinnerNum = num
+                }
+            }
+        }
+    }
+    val lastWinner = winnerBoards[winnerBoards.size - 1]
+    var sum = 0
+    lastWinner.gridMatrix.forEach { row -> row.forEach { grid -> if (!grid.isMarked) sum += grid.value } }
+    println("--- Part 2 ---")
+    println("This is the last winner board!")
+    lastWinner.printBoard()
+    println("Sum= $sum - LastWinnerNum= $lastWinnerNum")
+    print("Result = ${sum * lastWinnerNum}")
 }
 
 fun day04Part1(inputNums: List<Int>, boards: List<Board>) {
@@ -12,10 +38,11 @@ fun day04Part1(inputNums: List<Int>, boards: List<Board>) {
         boards.forEach {
             it.mark(num)
             if (it.checkWin()) {
-                println("This is the winner board!")
-                it.printBoard()
                 var sum = 0
                 it.gridMatrix.forEach { row -> row.forEach { grid -> if (!grid.isMarked) sum += grid.value } }
+                println("--- Part 1 ---")
+                println("This is the first winner board!")
+                it.printBoard()
                 println("Result = ${sum * num}")
                 return
             }
@@ -25,7 +52,7 @@ fun day04Part1(inputNums: List<Int>, boards: List<Board>) {
 
 data class Grid(val value: Int, var isMarked: Boolean = false)
 
-data class Board(val gridMatrix: List<List<Grid>>) {
+data class Board(val gridMatrix: List<List<Grid>>, var isWon: Boolean = false) {
 
     fun checkWin(): Boolean {
         // check horizontal
