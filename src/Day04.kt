@@ -34,20 +34,27 @@ fun day04Part2(inputNums: List<Int>, boards: List<Board>) {
 }
 
 fun day04Part1(inputNums: List<Int>, boards: List<Board>) {
-    inputNums.forEach { num ->
-        boards.forEach {
-            it.mark(num)
-            if (it.checkWin()) {
-                var sum = 0
-                it.gridMatrix.forEach { row -> row.forEach { grid -> if (!grid.isMarked) sum += grid.value } }
-                println("--- Part 1 ---")
-                println("This is the first winner board!")
-                it.printBoard()
-                println("Result = ${sum * num}")
-                return
+    var firstWinnerNum = 0
+    lateinit var firstWinnerBoard: Board
+    run allNumbersLoop@{
+        inputNums.forEach { num ->
+            boards.forEach {
+                it.mark(num)
+                if (it.checkWin()) {
+                    firstWinnerNum = num
+                    firstWinnerBoard = it
+                    return@allNumbersLoop
+                }
             }
         }
     }
+
+    var sum = 0
+    firstWinnerBoard.gridMatrix.forEach { row -> row.forEach { grid -> if (!grid.isMarked) sum += grid.value } }
+    println("--- Part 1 ---")
+    println("This is the first winner board!")
+    firstWinnerBoard.printBoard()
+    println("Result = ${sum * firstWinnerNum}")
 }
 
 data class Grid(val value: Int, var isMarked: Boolean = false)
