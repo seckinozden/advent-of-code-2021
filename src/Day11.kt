@@ -4,10 +4,29 @@ fun main() {
     val input = parseDay11(readInput("Day11_input"))
 
     day11Part1(input)
+    day11Part2(input)
+}
+
+fun day11Part2(input: List<List<Cell>>) {
+    var day = 0
+    while (true) {
+        day++
+        resetGlowStatus(input)
+        for (row in input.indices) {
+            for (col in input[0].indices) {
+                processCell(input, row, col)
+            }
+        }
+        if (checkIfAllFlashed(input)) {
+            break
+        }
+    }
+
+    println("--- Part 2 ---")
+    println("Result= $day")
 }
 
 fun day11Part1(input: List<List<Cell>>) {
-
     for (i in 1..DAYS) {
         resetGlowStatus(input)
         for (row in input.indices) {
@@ -33,13 +52,10 @@ private fun processCell(input: List<List<Cell>>, row: Int, col: Int) {
 }
 
 private fun handleGlow(input: List<List<Cell>>, row: Int, col: Int) {
-    val currentCell = input[row][col]
-    if (!currentCell.isGlowed) {
-        currentCell.apply {
-            data = 0
-            isGlowed = true
-            result++
-        }
+    input[row][col].apply {
+        data = 0
+        isGlowed = true
+        result++
     }
 
     if (row > 0 && col > 0 && !input[row - 1][col - 1].isGlowed) { // up left
@@ -74,6 +90,17 @@ private fun resetGlowStatus(input: List<List<Cell>>) {
             input[row][col].isGlowed = false
         }
     }
+}
+
+private fun checkIfAllFlashed(input: List<List<Cell>>): Boolean {
+    for (row in input.indices) {
+        for (col in input[0].indices) {
+            if (!input[row][col].isGlowed) {
+                return false
+            }
+        }
+    }
+    return true
 }
 
 fun parseDay11(input: List<String>): List<List<Cell>> {
