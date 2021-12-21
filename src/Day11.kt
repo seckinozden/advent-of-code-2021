@@ -22,10 +22,13 @@ fun day11Part1(input: List<List<Cell>>) {
 }
 
 private fun processCell(input: List<List<Cell>>, row: Int, col: Int) {
-    if (input[row][col].data == 9) {
-        handleGlow(input, row, col)
-    } else {
-        input[row][col].increaseVal()
+    val cell = input[row][col]
+    if (!cell.isGlowed) {
+        if (cell.data == 9) {
+            handleGlow(input, row, col)
+        } else {
+            cell.increaseVal()
+        }
     }
 }
 
